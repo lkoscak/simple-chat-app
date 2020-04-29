@@ -12,8 +12,14 @@ app.use(express.static(path.join(__dirname, "public")));
 
 io.on("connection", (socket) => {
 	console.log("New connection..");
-
-	socket.emit("message", "Hi there");
+	// Message to connected user on connection
+	socket.emit("message", "Hello user");
+	// Message to other users on new user connection
+	socket.broadcast.emit("message", "New user connected");
+	// User disconnected
+	socket.on("disconnect", () => {
+		io.emit("message", "User disconnected");
+	});
 });
 
 const port = process.env.PORT || 5000;
