@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
-import socketIOClient from "socket.io-client";
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import SignInScreen from "./SignInScreen";
+import ChatScreen from "./ChatScreen";
 
-export const App = () => {
-	const endpoint = "http://127.0.0.1:5000";
-
-	const [response, setResponse] = useState("No message yet...");
-
-	useEffect(() => {
-		const socket = socketIOClient(endpoint);
-		socket.on("message", (message) => setResponse(message));
-	}, []);
-
+const App = () => {
 	return (
-		<div>
-			<h1>{response}</h1>
-		</div>
+		<Router>
+			<Switch>
+				<Route exact path="/" component={SignInScreen} />
+				<Route exact path="/chat" component={ChatScreen} />
+			</Switch>
+		</Router>
 	);
 };
+
+export default App;

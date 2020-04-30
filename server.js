@@ -12,14 +12,41 @@ app.use(express.static(path.join(__dirname, "public")));
 
 io.on("connection", (socket) => {
 	console.log("New connection..");
-	// Message to connected user on connection
-	socket.emit("message", "Hello user");
-	// Message to other users on new user connection
-	socket.broadcast.emit("message", "New user connected");
-	// User disconnected
-	socket.on("disconnect", () => {
-		io.emit("message", "User disconnected");
+
+	// User joining a room
+	socket.on("joinRoom", ({ nick, room }) => {
+		// Save a user in db or locally
+		socket.join(room);
+
+		// Message to connected user on connection
+		socket.emit("message", {
+			text: `Welcome to chat ${nick}`,
+			nick,
+			time: "some time",
+		});
+
+		// Message to other users on new user connection
+		socket.broadcast.to(room).emit("message", {
+			text: `Welcome to chat ${nick}`,
+			nick,
+			time: "some time",
+		});
 	});
+
+	// User message to chat
+	socket.on("message", (message) =>
+		io.to("JavaScript").emit("message", {
+			text: message,
+			nick: message,
+			time: "some time",
+		})
+	);
+
+	/* User disconnected
+	socket.on("disconnect", () => {
+		io.emit("message", `${nick} left the room`);
+    });
+    */
 });
 
 const port = process.env.PORT || 5000;
