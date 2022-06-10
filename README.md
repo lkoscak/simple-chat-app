@@ -7,7 +7,7 @@
 #### Run The App Locally
 
 ```sh
-npm i in root and client folder
+npm i //in root and client folder
 ```
 ```sh
 npm run dev
